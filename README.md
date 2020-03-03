@@ -8,7 +8,7 @@ First install the app
 
 To execute:
 
-bench --site <site_name> execute deployer.deploy.startDeployment --kwargs "{'server':'<server-name>', 'user':'<user-name>', 'password':'<password>'}"
+bench --site <site_name> execute deployer.deploy.startDeployment --kwargs "{'server':'<"server-name">', 'user':'<"user-name">', 'password':'<"password">'}"
 
     Example
     
