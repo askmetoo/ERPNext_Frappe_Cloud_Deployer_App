@@ -39,12 +39,12 @@ def uploadData(jsonData,fileName,kwargs):
         "Content-Type":"application/x-www-form-urlencoded"
     }
     api =kwargs['server']+"/api/resource/"+urllib.parse.quote(jsonData['doctype'])
-    response = requests.post(api,headers=headers,data=json.dumps(jsonData),cookies=getCookie(kwargs))
+    response = requests.post(api,headers=headers,data=json.dumps(removeUnwantedKeys(jsonData)),cookies=getCookie(kwargs))
     if response.status_code==200:
         print("Successfully inserted "+jsonData['name']+" to "+jsonData['doctype'])
         frappe.logger().info("Successfully inserted "+jsonData['name']+" to "+jsonData['doctype'])
     elif response.status_code == 409 and response.reason == 'CONFLICT' :
-        response = requests.put(api+"/"+urllib.parse.quote(jsonData['name']),headers=headers,data=json.dumps(jsonData),cookies=getCookie(kwargs))
+        response = requests.put(api+"/"+urllib.parse.quote(jsonData['name']),headers=headers,data=json.dumps(removeUnwantedKeys(jsonData)),cookies=getCookie(kwargs))
         if response.status_code==200:
             if not 'data' in response.json():
                 raise Exception("Unable to update the doctype "+jsonData['doctype']+ " Api is :"+api+"/"+urllib.parse.quote(jsonData['name']))
@@ -76,3 +76,21 @@ def createJson(tup, di):
         di.update(dict(zip(it, it)))
     return di
 
+# def removeUnwantedKeys(jsonData):
+#     del_keys = ('modified')
+# 		for val in jsonData:
+
+def removeUnwantedKeys(jsonData):
+    del_keys=('modified','modified_by', 'creation', 'owner', 'idx')
+    for key in del_keys:
+        if key in del_keys:
+            del jsonData[key]
+            print("Removed "+key+ " in "+jsonData['doctype'])
+    for json in jsonData:
+        for key in del_keys:
+            if key in json:
+                del json[key]
+                print("Removed "+key+ " in "+jsonData['doctype'])
+    return jsonData
+ 
+            
