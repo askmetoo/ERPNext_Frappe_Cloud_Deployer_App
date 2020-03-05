@@ -44,7 +44,7 @@ def uploadData(jsonData,fileName,kwargs):
         print("Successfully inserted "+jsonData['name']+" to "+jsonData['doctype'])
         frappe.logger().info("Successfully inserted "+jsonData['name']+" to "+jsonData['doctype'])
     elif response.status_code == 409 and response.reason == 'CONFLICT' :
-        response = requests.put(api,headers=headers,data=json.dumps(jsonData),cookies=getCookie(kwargs))
+        response = requests.put(api+"/"+urllib.parse.quote(jsonData['name']),headers=headers,data=json.dumps(jsonData),cookies=getCookie(kwargs))
         print("Successfully updated "+jsonData['doctype']+" doctype with "+jsonData['name'] )
         frappe.logger().info("Successfully updated "+jsonData['doctype']+" doctype with "+jsonData['name'] )
     elif (not response.status_code == 200) and (not response.status_code==417):
