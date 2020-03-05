@@ -57,6 +57,9 @@ def getCookie(kwargs):
         cookies=response.headers['Set-Cookie']
         cookieParts = []
         for index,val in enumerate(cookies.split(delim)):
+            for index,val in enumerate(cookies.split(delim)):
+                if 'Path=/,' in val:
+                    val= val.split(',')[1] if len(val.split(','))>0 else val.split(',')[0]
             cookieParts.append(val.split("="))
         di={}
         return createJson(cookieParts,di)
