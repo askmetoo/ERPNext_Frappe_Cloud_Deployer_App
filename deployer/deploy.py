@@ -76,19 +76,11 @@ def createJson(tup, di):
         di.update(dict(zip(it, it)))
     return di
 
-# def removeUnwantedKeys(jsonData):
-#     del_keys = ('modified')
-# 		for val in jsonData:
-
 def removeUnwantedKeys(jsonData):
     del_keys=('modified','modified_by', 'creation', 'owner', 'idx')
     for key in del_keys:
         if key in jsonData:
             del jsonData[key]
-    for json in jsonData:
-        for key in del_keys:
-            if key in json:
-                del json[key]
     return jsonData
  
             
