@@ -83,14 +83,12 @@ def createJson(tup, di):
 def removeUnwantedKeys(jsonData):
     del_keys=('modified','modified_by', 'creation', 'owner', 'idx')
     for key in del_keys:
-        if key in del_keys:
+        if key in jsonData:
             del jsonData[key]
-            print("Removed "+key+ " in "+jsonData['doctype'])
     for json in jsonData:
         for key in del_keys:
             if key in json:
                 del json[key]
-                print("Removed "+key+ " in "+jsonData['doctype'])
     return jsonData
  
             
