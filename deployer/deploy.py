@@ -48,8 +48,10 @@ def uploadData(jsonData,fileName,kwargs):
         if response.status_code==200:
             if not 'data' in response.json():
                 raise Exception("Unable to update the doctype "+jsonData['doctype']+ " Api is :"+api+"/"+urllib.parse.quote(jsonData['name']))
-        print("Successfully updated "+jsonData['doctype']+" doctype with "+jsonData['name'] )
-        frappe.logger().info("Successfully updated "+jsonData['doctype']+" doctype with "+jsonData['name'] )
+            print("Successfully updated "+jsonData['doctype']+" doctype with "+jsonData['name'] )
+            frappe.logger().info("Successfully updated "+jsonData['doctype']+" doctype with "+jsonData['name'] )
+        else:
+            raise Exception("Exception while processing the request. Response code is "+str(response.status_code)+". Reason is "+response.reason)
     elif (not response.status_code == 200) and (not response.status_code==417):
         raise Exception("Exception while processing the request. Response code is "+str(response.status_code)+". Reason is "+response.reason)
 
