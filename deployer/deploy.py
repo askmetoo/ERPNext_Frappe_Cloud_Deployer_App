@@ -29,13 +29,13 @@ def startDeployment(**kwargs):
                     if file_list_lenght == len(fixture_file_list):
                         checkList=fixture_file_list.copy()
                         file_List_Lenght=len(fixture_file_list)
-                    fname=file_list_lenght.pop()
+                    fname=fixture_file_list.pop()
                     if fname.endswith(".json"):
                         wholeJsonData=getJsonData(frappe.get_app_path(app,"fixtures",fname))
                         for jsonData in wholeJsonData:
                             if not uploadData(jsonData,fname,kwargs):
-                                file_list_lenght.insert(0,fname)
-                                file_List_Lenght=len(fixture_file_list)
+                                fixture_file_list.insert(0,fname)
+                                file_list_lenght=len(fixture_file_list)
                                 break
                     if checkList == fixture_file_list:
                         raise Exception("Unable to deploy the following doctypes "+str(fixture_file_list)+". Reason: Some dependent doctypes could be missing.")
