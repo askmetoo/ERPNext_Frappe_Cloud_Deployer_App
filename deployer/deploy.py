@@ -58,11 +58,7 @@ def uploadData(jsonData,fileName,kwargs):
     userName=kwargs['user']
     password=kwargs['password']
     formatedAuthStr=userName+':'+password
-    headers = {
-        "Authorization":"basic "+str(base64.b64encode(formatedAuthStr.encode())),
-        "Content-Type":"application/json",
-        "Content-Type":"application/x-www-form-urlencoded"
-    }
+    headers=prepare_and_get_header(kwargs)
     api =kwargs['server']+"/api/resource/"+urllib.parse.quote(jsonData['doctype'])
     response = requests.post(api,headers=headers,data=json.dumps(removeUnwantedKeys(jsonData)),cookies=getCookie(kwargs))
     if response.status_code==417:
@@ -122,5 +118,36 @@ def removeUnwantedKeys(jsonData):
         if key in jsonData:
             del jsonData[key]
     return jsonData
+
+def prepare_and_get_header(kwargs):
+    userName=kwargs['user']
+    password=kwargs['password']
+    headers = {
+        "Content-Type":"application/json",
+        "Content-Type":"application/x-www-form-urlencoded"
+    }
+    try:
+        if kwargs['key']:
+            headers["Authorization"]="token "+kwargs['key']+":"+get_secret_key(kwargs)
+        else:
+            formatedAuthStr=userName+':'+password
+            headers["Authorization"]="basic "+str(base64.b64encode(formatedAuthStr.encode()))
+    except KeyError:
+        formatedAuthStr=userName+':'+password
+        headers["Authorization"]="basic "+str(base64.b64encode(formatedAuthStr.encode()))
+    except Exception as err:
+        raise Exception("Exception while connecting to the server.")
+    return headers
+    
+def get_secret_key(kwargs):
+    try:
+        response=requests.get(kwargs['server']+"/api/method/frappe.core.doctype.user.user.generate_keys?user="+kwargs['user'],cookies=getCookie(kwargs))
+        if response.status_code==200:
+            return response.json()['message']['api_secret']
+        else:
+            raise Exception("Exception while connecting to the server. Response code is "+str(response.status_code)+". Reason is "+response.reason)
+    except Exception as err:
+        print(err)
+        frappe.logger().error(frappe.utils.get_traceback())
  
             
